@@ -1,11 +1,12 @@
 /**
- * [INPUT]: 依赖用户提供的 /app Sidebar 入口列表，依赖 react-router-dom 的 Link/useLocation，依赖 app/src/index.css 的 sidebar 菜单密度 token，依赖 shared/design-system 的 Avatar、Icon 组件
+ * [INPUT]: 依赖 react 的 useState，依赖用户提供的 /app Sidebar 入口列表，依赖 react-router-dom 的 Link/useLocation，依赖 app/src/index.css 的 sidebar 菜单密度与磨砂质感 token，依赖 shared/design-system 的 Avatar、Icon、Logo 组件
  * [OUTPUT]: 对外提供 Sidebar 组件
  * [POS]: widgets 的应用侧边导航，被 AppDashboard 消费并固定呈现用户端功能入口
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Avatar, Icon, type IconName } from "../shared/design-system";
+import { Avatar, Icon, Logo, type IconName } from "../shared/design-system";
 
 const sidebarItems: Array<{ icon: IconName; label: string }> = [
   { icon: "dashboard", label: "工作台" },
@@ -24,18 +25,28 @@ const userProfile = {
 export function Sidebar() {
   const { pathname } = useLocation();
   const isAppHome = pathname === "/app";
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
-    <aside className="flex min-h-screen flex-col border-r border-sidebar-border bg-sidebar p-panel text-sidebar-foreground">
-      <div className="flex items-center">
-        <div className="flex items-center gap-stack-xs">
-          <span className="flex h-stack-lg w-stack-lg items-center justify-center rounded-md bg-primary font-sans text-ui-xs font-medium text-primary-foreground">
-            G
-          </span>
-          <span className="font-sans text-ui-lg font-medium tracking-tight text-foreground">
-            go_shop
-          </span>
-        </div>
+    <aside
+      className={`flex min-h-screen shrink-0 flex-col overflow-hidden border-r border-sidebar-frost-border bg-sidebar-frost p-panel text-sidebar-foreground backdrop-blur-md transition-all duration-300 ease-out ${
+        isCollapsed ? "w-sidebar-collapsed" : "w-sidebar-expanded"
+      }`}
+    >
+      <div className="relative flex items-center justify-center">
+        <Logo
+          className="transition-opacity duration-300 ease-out"
+          showWordmark={!isCollapsed}
+          size="md"
+        />
+        <button
+          aria-label={isCollapsed ? "展开侧边栏" : "收起侧边栏"}
+          className="absolute right-0 flex h-sidebar-action w-sidebar-action items-center justify-center rounded-lg text-sidebar-foreground transition duration-200 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:translate-y-px"
+          onClick={() => setIsCollapsed((current) => !current)}
+          type="button"
+        >
+          <Icon name={isCollapsed ? "panel-left-open" : "panel-left-close"} />
+        </button>
       </div>
 
       <nav className="mt-stack-xl flex flex-col gap-sidebar-nav-gap">
@@ -50,7 +61,13 @@ export function Sidebar() {
             type="button"
           >
             <Icon name={item.icon} />
-            <span>{item.label}</span>
+            <span
+              className={`truncate transition-opacity duration-200 ease-out ${
+                isCollapsed ? "opacity-0" : "opacity-100"
+              }`}
+            >
+              {item.label}
+            </span>
           </button>
         ))}
         {isDevelopment ? (
@@ -63,17 +80,27 @@ export function Sidebar() {
             to="/design-system"
           >
             <Icon name="design-system" />
-            <span>Design System</span>
+            <span
+              className={`truncate transition-opacity duration-200 ease-out ${
+                isCollapsed ? "opacity-0" : "opacity-100"
+              }`}
+            >
+              Design System
+            </span>
           </Link>
         ) : null}
       </nav>
 
-      <div className="mt-auto flex items-center gap-stack-sm rounded-2xl border border-sidebar-border bg-sidebar-accent p-stack-sm text-sidebar-accent-foreground">
+      <div className="mt-auto flex items-center gap-stack-sm rounded-2xl border border-sidebar-frost-border bg-sidebar-frost p-stack-sm text-sidebar-accent-foreground backdrop-blur-md">
         <Avatar initials={userProfile.initials} />
-        <div className="min-w-0">
-          <p className="truncate font-sans text-sidebar-action leading-ui-tight text-foreground">
-            {userProfile.name}
-          </p>
+        <div
+          className={`min-w-0 transition-opacity duration-200 ease-out ${
+            isCollapsed ? "opacity-0" : "opacity-100"
+          }`}
+        >
+            <p className="truncate font-sans text-sidebar-action leading-ui-tight text-foreground">
+              {userProfile.name}
+            </p>
         </div>
       </div>
     </aside>

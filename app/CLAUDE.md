@@ -10,6 +10,7 @@ src/index.css 是唯一设计系统真相源，颜色、字体、半径、阴影
 
 成员清单
 index.html: Vite HTML 入口，挂载 React 根节点并加载 src/main.tsx。
+public/brand/mallerai-logo.png: Mallerai 品牌图形资产，被设计系统 Logo 组件消费。
 vite.config.ts: Vite 配置，接入 React 插件与 Tailwind CSS v4 Vite 插件。
 src/main.tsx: React 浏览器挂载入口，加载唯一设计系统 src/index.css 与 AppRouter。
 src/index.css: Tailwind CSS v4 入口，承载 Kumo source 配置、OKLCH 颜色系统和所有设计 token。

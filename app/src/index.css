@@ -35,6 +35,8 @@
   --sidebar-accent: oklch(0.9461 0 0);
   --sidebar-accent-foreground: oklch(0.2435 0 0);
   --sidebar-border: oklch(0.9037 0 0);
+  --sidebar-frost: oklch(0.9911 0 0 / 0.72);
+  --sidebar-frost-border: oklch(0.9037 0 0 / 0.72);
   --sidebar-ring: oklch(0.8348 0.1302 160.908);
   --font-sans: Outfit, ui-sans-serif, system-ui, sans-serif;
   --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
@@ -91,6 +93,8 @@
   --sidebar-accent: oklch(0.3132 0 0);
   --sidebar-accent-foreground: oklch(0.9851 0 0);
   --sidebar-border: oklch(0.2809 0 0);
+  --sidebar-frost: oklch(0.1822 0 0 / 0.78);
+  --sidebar-frost-border: oklch(0.2809 0 0 / 0.72);
   --sidebar-ring: oklch(0.8003 0.1821 151.711);
   --stroke-icon: 1.8;
 }
@@ -127,6 +131,8 @@
   --color-sidebar-accent: var(--sidebar-accent);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-frost: var(--sidebar-frost);
+  --color-sidebar-frost-border: var(--sidebar-frost-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
   --font-sans: var(--font-sans);
@@ -168,14 +174,18 @@
   --spacing-stack-xl: calc(var(--spacing) * 8);
   --spacing-sidebar-nav-gap: calc(var(--spacing) * 0.5);
   --spacing-viewport-offset: calc(var(--spacing) * 10);
-  --spacing-sidebar-icon: calc(var(--spacing) * 3.5);
+  --spacing-sidebar-icon: calc(var(--spacing) * 4);
   --spacing-user-avatar: calc(var(--spacing) * 8);
+  --spacing-logo-mark-sm: calc(var(--spacing) * 9);
+  --spacing-logo-mark-md: calc(var(--spacing) * 10);
+  --spacing-logo-mark-lg: calc(var(--spacing) * 12);
 
   --text-ui-xs: calc(var(--spacing) * 3.5);
   --text-ui-sm: calc(var(--spacing) * 3.75);
   --text-ui-md: calc(var(--spacing) * 4);
   --text-ui-lg: calc(var(--spacing) * 4.5);
-  --text-sidebar-action: calc(var(--spacing) * 3.25);
+  --text-logo-wordmark: calc(var(--spacing) * 5.5);
+  --text-sidebar-action: calc(var(--spacing) * 3.5);
   --text-title-sm: calc(var(--spacing) * 6.5);
   --text-title-md: calc(var(--spacing) * 11);
   --text-title-lg: calc(var(--spacing) * 16);
@@ -191,6 +201,7 @@
   --container-shell: calc(var(--spacing) * 360);
   --container-copy: calc(var(--spacing) * 155);
   --container-sidebar: calc(var(--spacing) * 60);
+  --container-sidebar-collapsed: calc(var(--spacing) * 19);
   --container-agent: calc(var(--spacing) * 90);
   --container-aside: calc(var(--spacing) * 105);
   --container-agent-copy: 28ch;
@@ -208,8 +219,9 @@
   --height-bar-5: calc(var(--spacing) * 16);
   --height-bar-6: calc(var(--spacing) * 22);
   --width-chart-bar: calc(var(--spacing) * 8);
+  --width-sidebar-expanded: var(--container-sidebar);
+  --width-sidebar-collapsed: var(--container-sidebar-collapsed);
 
-  --grid-app-shell: var(--container-sidebar) minmax(0, 1fr);
   --grid-design-system-matrix: repeat(auto-fit, minmax(var(--container-component-preview), 1fr));
   --grid-landing: minmax(0, 1fr) var(--container-aside);
 }
@@ -242,10 +254,6 @@
 }
 
 @layer utilities {
-  .layout-app-shell {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
   .layout-landing {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -257,12 +265,6 @@
   @media (width >= 48rem) {
     .layout-landing {
       grid-template-columns: var(--grid-landing);
-    }
-  }
-
-  @media (width >= 64rem) {
-    .layout-app-shell {
-      grid-template-columns: var(--grid-app-shell);
     }
   }
 }

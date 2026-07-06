@@ -1,5 +1,5 @@
 /**
- * [INPUT]: 依赖 shared/design-system 的 Avatar、Button、Icon、Surface、Eyebrow、Title、BodyText、MetricText、TextArea
+ * [INPUT]: 依赖 shared/design-system 的 Avatar、Button、Icon、Logo、Surface、Eyebrow、Title、BodyText、MetricText、TextArea
  * [OUTPUT]: 对外提供 designSystemComponents 组件预览清单与 DesignSystemComponentPreview 类型
  * [POS]: pages/DesignSystem 的静态数据源，被 ComponentMatrix 消费以矩阵方式展示设计系统组件
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
@@ -11,6 +11,7 @@ import {
   Button,
   Eyebrow,
   Icon,
+  Logo,
   MetricText,
   Surface,
   TextArea,
@@ -47,8 +48,14 @@ export const designSystemComponents: readonly DesignSystemComponentPreview[] = [
         <Icon name="send" />
         <Icon name="subscription" />
         <Icon name="settings" />
+        <Icon name="panel-left-close" />
+        <Icon name="panel-left-open" />
       </div>
     ),
+  },
+  {
+    name: "Logo",
+    render: () => <Logo />,
   },
   {
     name: "Surface",

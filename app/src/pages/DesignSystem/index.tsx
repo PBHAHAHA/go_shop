@@ -12,10 +12,10 @@ import { designSystemComponents } from "./componentCatalog";
 export function DesignSystemPage() {
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <div className="layout-app-shell grid w-full">
+      <div className="flex w-full">
         <Sidebar />
 
-        <section className="min-h-screen px-panel-lg py-panel-lg">
+        <section className="min-h-screen flex-1 px-panel-lg py-panel-lg">
           <div className="grid gap-panel-lg">
             <header>
               <Title size="sm">Design System</Title>

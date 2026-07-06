@@ -11,6 +11,8 @@ export type IconName =
   | "dashboard"
   | "design-system"
   | "package"
+  | "panel-left-close"
+  | "panel-left-open"
   | "send"
   | "settings"
   | "subscription";
@@ -42,6 +44,16 @@ const iconPaths: Record<IconName, string[]> = {
     "M4.5 8 12 4l7.5 4v8L12 20l-7.5-4z",
     "M4.5 8 12 12l7.5-4",
     "M12 12v8",
+  ],
+  "panel-left-close": [
+    "M4.5 5h15v14h-15z",
+    "M9 5v14",
+    "M15 9l-3 3 3 3",
+  ],
+  "panel-left-open": [
+    "M4.5 5h15v14h-15z",
+    "M9 5v14",
+    "M12 9l3 3-3 3",
   ],
   send: ["M4 12 20 4l-5 16-3.5-6.5z", "M11.5 13.5 20 4"],
   settings: [

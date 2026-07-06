@@ -3,7 +3,7 @@
 
 成员清单
 .gitkeep: 保持前端共享层目录存在，当前不承载业务实现。
-design-system/: 唯一设计系统组件目录，承载 Avatar、Button、Icon、Surface、Text、TextArea 等基础 UI；所有新组件必须进入此目录。
+design-system/: 唯一设计系统组件目录，承载 Avatar、Button、Icon、Logo、Surface、Text、TextArea 等基础 UI；所有新组件必须进入此目录。
 ui/: 旧 UI 兼容出口，只能转发 design-system，不允许新增真实实现。
 
 设计约束

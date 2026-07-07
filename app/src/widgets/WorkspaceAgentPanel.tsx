@@ -1,10 +1,16 @@
 /**
- * [INPUT]: 依赖 react 的 useEffect/useMemo/useState，依赖 CharacterAsset 类型，依赖 shared/design-system 的 AgentComposer
+ * [INPUT]: 依赖 react 的 useEffect/useMemo/useState，依赖 ip-creation API client、CharacterAsset 类型与 shared/design-system 的 AgentComposer
  * [OUTPUT]: 对外提供 WorkspaceAgentPanel 组件
- * [POS]: widgets 的工作区右侧 Agent 区，提供角色生成对话流并把产图同步到左侧 D3 画布
+ * [POS]: widgets 的工作区右侧 Agent 区，调用 chat 后端进行 IP 主动追问与三视图产图，并同步到左侧 D3 画布
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useEffect, useMemo, useState } from "react";
+import {
+  createIpCreationSession,
+  sendIpCreationMessage,
+  type ChatGeneratedAsset,
+  type IpCreationResponse,
+} from "../features/ip-creation/api/ipCreationClient";
 import { AgentComposer } from "../shared/design-system";
 import type { CharacterAsset } from "./CharacterD3Canvas";
 
@@ -23,64 +29,34 @@ type AgentMessage = {
 
 const imageWidth = 220;
 const imageHeight = 260;
+const boardWidth = 720;
+const boardHeight = 420;
 const generatedPositions = [
-  { x: 500, y: 180 },
-  { x: 760, y: 220 },
-  { x: 560, y: 520 },
-  { x: 830, y: 540 },
+  { x: 260, y: 180 },
+  { x: 360, y: 260 },
+  { x: 180, y: 360 },
+  { x: 460, y: 420 },
 ];
 
-function escapeSvgText(value: string) {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
-}
-
-function createGeneratedImage(prompt: string, index: number) {
-  const palettes = [
-    ["#f6fbf6", "#7ed7b2", "#1f5f50", "#f2c14e"],
-    ["#fff7f0", "#ff9b71", "#3d405b", "#81b29a"],
-    ["#f6f3ff", "#9b8cff", "#2f245f", "#f7c8e0"],
-    ["#f3fbff", "#72c6ef", "#14394f", "#ffcf56"],
-  ];
-  const palette = palettes[index % palettes.length] ?? palettes[0];
-  const label = escapeSvgText(prompt.slice(0, 18) || "IP 角色");
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="${imageWidth}" height="${imageHeight}" viewBox="0 0 ${imageWidth} ${imageHeight}">
-      <rect width="220" height="260" rx="18" fill="${palette[0]}"/>
-      <path d="M30 205 C58 170, 76 156, 110 158 C146 160, 170 176, 192 207 L192 228 L30 228 Z" fill="${palette[1]}"/>
-      <circle cx="110" cy="100" r="58" fill="${palette[1]}"/>
-      <path d="M62 91 C70 42, 95 37, 110 62 C126 37, 152 43, 158 91" fill="${palette[3]}"/>
-      <circle cx="88" cy="101" r="6" fill="${palette[2]}"/>
-      <circle cx="132" cy="101" r="6" fill="${palette[2]}"/>
-      <path d="M91 128 C104 139, 121 139, 134 128" fill="none" stroke="${palette[2]}" stroke-width="6" stroke-linecap="round"/>
-      <path d="M56 151 C36 149, 28 131, 41 118" fill="none" stroke="${palette[2]}" stroke-width="8" stroke-linecap="round"/>
-      <path d="M164 151 C184 149, 192 131, 179 118" fill="none" stroke="${palette[2]}" stroke-width="8" stroke-linecap="round"/>
-      <rect x="43" y="24" width="134" height="28" rx="14" fill="white" opacity="0.88"/>
-      <text x="110" y="43" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="${palette[2]}">${label}</text>
-    </svg>
-  `;
-
-  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
-}
-
-function getGeneratedAsset(prompt: string, assetCount: number): CharacterAsset {
+function getGeneratedAsset(
+  asset: ChatGeneratedAsset,
+  assetCount: number,
+): CharacterAsset {
   const position =
     generatedPositions[assetCount % generatedPositions.length] ??
     generatedPositions[0];
   const createdAt = Date.now();
+  const isTurnaround = asset.kind === "ip_turnaround_board";
 
   return {
     createdAt,
-    height: imageHeight,
-    id: `generated-${createdAt}`,
+    height: isTurnaround ? boardHeight : imageHeight,
+    id: asset.id || `generated-${createdAt}`,
     kind: "generated",
-    prompt,
-    src: createGeneratedImage(prompt, assetCount),
-    title: `角色产图 ${assetCount + 1}`,
-    width: imageWidth,
+    prompt: asset.prompt,
+    src: asset.imageUrl,
+    title: isTurnaround ? "IP 三视图设定板" : `角色产图 ${assetCount + 1}`,
+    width: isTurnaround ? boardWidth : imageWidth,
     x: position.x,
     y: position.y,
   };
@@ -93,11 +69,12 @@ export function WorkspaceAgentPanel({
 }: WorkspaceAgentPanelProps) {
   const [draft, setDraft] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [sessionId, setSessionId] = useState("");
   const [messages, setMessages] = useState<AgentMessage[]>([
     {
       id: "agent-welcome",
       role: "agent",
-      text: "把角色设定、草图描述或想要的换装方向发给我，我会生成图片并放到左侧 D3 画布。",
+      text: "告诉我你想打造什么 IP 形象，我会先追问关键风格信息，再生成一张专业三视图设定板放到左侧画布。",
     },
   ]);
 
@@ -115,7 +92,41 @@ export function WorkspaceAgentPanel({
     }
   }, [initialPrompt]);
 
-  function sendDraft() {
+  function handleIpCreationResponse(response: IpCreationResponse) {
+    setSessionId(response.session.id);
+
+    if (response.type === "generation_completed") {
+      const chatAsset = response.task.asset;
+
+      if (chatAsset) {
+        const asset = getGeneratedAsset(chatAsset, assetCount);
+        onGeneratedAsset(asset);
+        setMessages((current) => [
+          ...current,
+          {
+            asset,
+            id: `agent-${asset.id}`,
+            role: "agent",
+            text:
+              response.message ||
+              "三视图设定板已生成，并同步到左侧画布。",
+          },
+        ]);
+        return;
+      }
+    }
+
+    setMessages((current) => [
+      ...current,
+      {
+        id: `agent-${Date.now()}`,
+        role: "agent",
+        text: response.message,
+      },
+    ]);
+  }
+
+  async function sendDraft() {
     const prompt = draft.trim();
 
     if (!prompt || isGenerating) {
@@ -132,20 +143,26 @@ export function WorkspaceAgentPanel({
     setDraft("");
     setIsGenerating(true);
 
-    window.setTimeout(() => {
-      const asset = getGeneratedAsset(prompt, assetCount);
-      onGeneratedAsset(asset);
+    try {
+      const response = sessionId
+        ? await sendIpCreationMessage(sessionId, prompt)
+        : await createIpCreationSession(prompt);
+      handleIpCreationResponse(response);
+    } catch (error) {
       setMessages((current) => [
         ...current,
         {
-          asset,
-          id: `agent-${asset.id}`,
+          id: `agent-error-${Date.now()}`,
           role: "agent",
-          text: "已生成一张角色图，并同步到左侧画布。你可以继续要求三视图、换装或运营图文。",
+          text:
+            error instanceof Error
+              ? error.message
+              : "IP 创作服务暂时不可用，请稍后重试。",
         },
       ]);
+    } finally {
       setIsGenerating(false);
-    }, 620);
+    }
   }
 
   return (
@@ -174,7 +191,7 @@ export function WorkspaceAgentPanel({
 
           {isGenerating ? (
             <div className="max-w-[92%] rounded-lg border border-border bg-muted/55 px-3 py-2 font-sans text-[12px] leading-ui-relaxed text-muted-foreground">
-              正在生成角色图片...
+              正在整理 IP 设定，必要时会继续追问；信息足够后会生成三视图...
             </div>
           ) : null}
         </div>

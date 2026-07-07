@@ -4,6 +4,7 @@
 模块定位: AI 能力服务，使用 Bun + Hono + TypeScript + Mastra + zod 承载 IP 形象生成、换装变体与运营内容产出的智能体编排。
 
 成员清单
+src/index.ts: chat HTTP 服务入口，装配健康检查、IP 创作路由与统一错误响应。
 src/routes/: Hono 路由入口边界，描述 IP 生成与运营内容能力的 HTTP 暴露面。
 src/dto/: zod DTO 边界，描述形象输入、三视图、换装、图文视频等输入输出契约。
 src/models/: 领域模型边界，描述 IP 形象、变体、运营产物等内部语义对象。

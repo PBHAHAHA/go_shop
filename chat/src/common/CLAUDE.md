@@ -2,6 +2,6 @@
 > L2 | 父级: chat/CLAUDE.md
 
 成员清单
-.gitkeep: 保持 AI 服务公共基础设施目录存在，当前不承载业务实现。
+appError.ts: 统一应用错误类型，携带 HTTP 状态码、错误代码与详情。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

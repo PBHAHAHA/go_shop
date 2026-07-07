@@ -31,9 +31,6 @@ type CharacterD3CanvasProps = {
 
 const canvasWidth = 1440;
 const canvasHeight = 980;
-const imageWidth = 220;
-const imageHeight = 260;
-
 export function CharacterD3Canvas({
   assets,
   onMoveAsset,
@@ -97,8 +94,6 @@ export function CharacterD3Canvas({
       .attr("class", "asset-image")
       .attr("x", 0)
       .attr("y", 0)
-      .attr("width", imageWidth)
-      .attr("height", imageHeight)
       .attr("preserveAspectRatio", "xMidYMid slice");
 
     const merged = entered.merge(nodes);
@@ -126,7 +121,9 @@ export function CharacterD3Canvas({
 
     merged
       .select<SVGImageElement>("image.asset-image")
-      .attr("href", (asset) => asset.src);
+      .attr("height", (asset) => asset.height)
+      .attr("href", (asset) => asset.src)
+      .attr("width", (asset) => asset.width);
   }, [assets, onMoveAsset]);
 
   return (

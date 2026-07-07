@@ -1,11 +1,15 @@
 /**
- * [INPUT]: 依赖 react 的 useState，依赖 shared/design-system 的 Icon，依赖 app/src/index.css 的 workspace-canvas token
+ * [INPUT]: 依赖 react 的 useState，依赖 CharacterD3Canvas，依赖 shared/design-system 的 Icon，依赖 app/src/index.css 的 workspace-canvas token
  * [OUTPUT]: 对外提供 WorkspaceCanvas 组件
- * [POS]: widgets 的工作区左侧内容区，顶部仅保留无背景紧凑滑块 Tab，内容区暂留白
+ * [POS]: widgets 的工作区左侧内容区，顶部 Tab 切换角色/运营/周边，角色页承载 D3 图片资产画布
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useState } from "react";
 import { Icon, type IconName } from "../shared/design-system";
+import {
+  CharacterD3Canvas,
+  type CharacterAsset,
+} from "./CharacterD3Canvas";
 
 type WorkspaceTab = "character" | "operations" | "merch";
 
@@ -15,7 +19,15 @@ const tabs: Array<{ icon: IconName; id: WorkspaceTab; label: string }> = [
   { icon: "package", id: "merch", label: "周边" },
 ];
 
-export function WorkspaceCanvas() {
+type WorkspaceCanvasProps = {
+  characterAssets: CharacterAsset[];
+  onMoveCharacterAsset: (id: string, position: { x: number; y: number }) => void;
+};
+
+export function WorkspaceCanvas({
+  characterAssets,
+  onMoveCharacterAsset,
+}: WorkspaceCanvasProps) {
   const [activeTab, setActiveTab] = useState<WorkspaceTab>(tabs[0].id);
   const activeTabIndex = tabs.findIndex((tab) => tab.id === activeTab);
 
@@ -50,7 +62,22 @@ export function WorkspaceCanvas() {
       <div
         aria-label={`${tabs.find((tab) => tab.id === activeTab)?.label}内容区`}
         className="h-full min-h-0 w-full"
-      />
+      >
+        {activeTab === "character" ? (
+          <CharacterD3Canvas
+            assets={characterAssets}
+            onMoveAsset={onMoveCharacterAsset}
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center px-panel text-center">
+            <p className="max-w-[300px] font-sans text-ui-sm leading-ui-relaxed text-muted-foreground">
+              {activeTab === "operations"
+                ? "运营内容区会承接角色资产，生成图文、短视频脚本与平台发布素材。"
+                : "周边区会基于角色三视图生成可售卖商品预览与打样素材。"}
+            </p>
+          </div>
+        )}
+      </div>
     </section>
   );
 }

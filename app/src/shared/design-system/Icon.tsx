@@ -11,6 +11,7 @@ export type IconName =
   | "dashboard"
   | "design-system"
   | "document"
+  | "image"
   | "package"
   | "panel"
   | "panel-left-close"
@@ -21,7 +22,8 @@ export type IconName =
   | "log-out"
   | "send"
   | "settings"
-  | "subscription";
+  | "subscription"
+  | "upload";
 
 type IconProps = SVGProps<SVGSVGElement> & {
   name: IconName;
@@ -51,6 +53,11 @@ const iconPaths: Record<IconName, string[]> = {
     "M14 4.5v3h3",
     "M9.5 11h5",
     "M9.5 14.5h4",
+  ],
+  image: [
+    "M5 5.5h14v13H5z",
+    "M8.5 9.5a1.5 1.5 0 1 0 0.1 0",
+    "M6.5 16l3.5-3.5 2.5 2.5 2-2 3 3",
   ],
   package: [
     "M4.5 8 12 4l7.5 4v8L12 20l-7.5-4z",
@@ -93,6 +100,7 @@ const iconPaths: Record<IconName, string[]> = {
     "M8 10h8",
     "M8 14h5",
   ],
+  upload: ["M12 16V5", "M8.5 8.5 12 5l3.5 3.5", "M5 18.5h14"],
 };
 
 export function Icon({ className = "", name, ...props }: IconProps) {

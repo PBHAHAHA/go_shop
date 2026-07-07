@@ -1,11 +1,12 @@
 /**
- * [INPUT]: 依赖 shared/design-system 的 Avatar、Button、Icon、Logo、Surface、Eyebrow、Title、BodyText、MetricText、TextArea
+ * [INPUT]: 依赖 shared/design-system 的 Avatar、Button、Icon、Logo、Sneak、Surface、Eyebrow、Title、BodyText、MetricText、TextArea
  * [OUTPUT]: 对外提供 designSystemComponents 组件预览清单与 DesignSystemComponentPreview 类型
  * [POS]: pages/DesignSystem 的静态数据源，被 ComponentMatrix 消费以矩阵方式展示设计系统组件
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import type { ReactNode } from "react";
 import {
+  AgentComposer,
   Avatar,
   BodyText,
   Button,
@@ -13,6 +14,10 @@ import {
   Icon,
   Logo,
   MetricText,
+  Sneak,
+  SneakItem,
+  SneakPanel,
+  SneakTrigger,
   Surface,
   TextArea,
   Title,
@@ -85,6 +90,43 @@ export const designSystemComponents: readonly DesignSystemComponentPreview[] = [
         aria-label="Design System TextArea preview"
         defaultValue="虚拟店长输入框预览"
       />
+    ),
+  },
+  {
+    name: "AgentComposer",
+    render: () => (
+      <AgentComposer
+        onChange={() => undefined}
+        onSubmit={() => undefined}
+        placeholder="输入想法，或输入 @ 提及货品"
+        value=""
+      />
+    ),
+  },
+  {
+    name: "Sneak",
+    render: () => (
+      <Sneak>
+        <SneakTrigger className="flex w-full max-w-sneak-menu items-center gap-stack-sm rounded-2xl border border-border bg-background p-stack-sm text-left hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
+          <Avatar initials="GS" />
+          <div className="min-w-0 flex-1">
+            <p className="truncate font-sans text-sidebar-action leading-ui-tight text-foreground">
+              采购商用户
+            </p>
+            <p className="truncate font-sans text-ui-xs leading-ui text-muted-foreground">
+              buyer@mallerai.com
+            </p>
+          </div>
+          <Icon className="h-stack-md w-stack-md shrink-0 text-muted-foreground" name="chevron-up" />
+        </SneakTrigger>
+        <SneakPanel side="bottom">
+          <SneakItem icon="settings">账户设置</SneakItem>
+          <SneakItem icon="subscription">订阅管理</SneakItem>
+          <SneakItem icon="log-out" variant="destructive">
+            退出登录
+          </SneakItem>
+        </SneakPanel>
+      </Sneak>
     ),
   },
 ] as const;

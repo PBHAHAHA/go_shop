@@ -6,7 +6,7 @@
  */
 import type { HTMLAttributes } from "react";
 
-export type LogoSize = "sm" | "md" | "lg";
+export type LogoSize = "sm" | "md" | "lg" | "xl";
 
 type LogoProps = HTMLAttributes<HTMLDivElement> & {
   showWordmark?: boolean;
@@ -17,6 +17,7 @@ const markSizes: Record<LogoSize, string> = {
   sm: "h-logo-mark-sm w-logo-mark-sm",
   md: "h-logo-mark-md w-logo-mark-md",
   lg: "h-logo-mark-lg w-logo-mark-lg",
+  xl: "h-logo-mark-xl w-logo-mark-xl",
 };
 
 export function Logo({

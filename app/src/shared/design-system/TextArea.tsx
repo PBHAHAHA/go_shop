@@ -11,7 +11,7 @@ type TextAreaProps = TextareaHTMLAttributes<HTMLTextAreaElement>;
 export function TextArea({ className = "", ...props }: TextAreaProps) {
   return (
     <textarea
-      className={`min-h-agent-input w-full resize-none rounded-2xl border border-input bg-input p-panel font-sans text-ui-md leading-ui text-foreground outline-none placeholder:text-muted-foreground focus:border-ring ${className}`}
+      className={`min-h-agent-input w-full resize-none rounded-2xl border border-input bg-input p-panel font-sans text-ui-md leading-ui text-foreground outline-none placeholder:text-placeholder focus:border-ring ${className}`}
       {...props}
     />
   );

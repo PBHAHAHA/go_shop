@@ -10,9 +10,15 @@ export type IconName =
   | "content"
   | "dashboard"
   | "design-system"
+  | "document"
   | "package"
+  | "panel"
   | "panel-left-close"
   | "panel-left-open"
+  | "plus"
+  | "chevron-up"
+  | "chevron-down"
+  | "log-out"
   | "send"
   | "settings"
   | "subscription";
@@ -40,11 +46,18 @@ const iconPaths: Record<IconName, string[]> = {
     "M6 13h5v5H6z",
     "M13 13h5v5h-5z",
   ],
+  document: [
+    "M7 4.5h7l3 3v12H7z",
+    "M14 4.5v3h3",
+    "M9.5 11h5",
+    "M9.5 14.5h4",
+  ],
   package: [
     "M4.5 8 12 4l7.5 4v8L12 20l-7.5-4z",
     "M4.5 8 12 12l7.5-4",
     "M12 12v8",
   ],
+  panel: ["M5.5 6.5h13v11h-13z", "M8 9.5h8", "M8 12.5h8"],
   "panel-left-close": [
     "M4.5 5h15v14h-15z",
     "M9 5v14",
@@ -54,6 +67,14 @@ const iconPaths: Record<IconName, string[]> = {
     "M4.5 5h15v14h-15z",
     "M9 5v14",
     "M12 9l3 3-3 3",
+  ],
+  plus: ["M12 5v14", "M5 12h14"],
+  "chevron-up": ["M8 14l4-4 4 4"],
+  "chevron-down": ["M8 10l4 4 4-4"],
+  "log-out": [
+    "M10 5h8v14h-8",
+    "M6 12h8",
+    "M8 9l-3 3 3 3",
   ],
   send: ["M4 12 20 4l-5 16-3.5-6.5z", "M11.5 13.5 20 4"],
   settings: [

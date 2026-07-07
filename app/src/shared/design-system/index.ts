@@ -5,12 +5,22 @@
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 export { Avatar } from "./Avatar";
+export { AgentComposer } from "./AgentComposer";
 export { Button } from "./Button";
 export type { ButtonVariant } from "./Button";
 export { Icon } from "./Icon";
 export type { IconName } from "./Icon";
+export { Input } from "./Input";
 export { Logo } from "./Logo";
 export type { LogoSize } from "./Logo";
+export { Modal } from "./Modal";
+export {
+  Sneak,
+  SneakItem,
+  SneakPanel,
+  SneakTrigger,
+} from "./Sneak";
+export type { SneakItemVariant } from "./Sneak";
 export { Surface } from "./Surface";
 export { BodyText, Eyebrow, MetricText, Title } from "./Text";
 export { TextArea } from "./TextArea";

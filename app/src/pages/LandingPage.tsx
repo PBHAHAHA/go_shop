@@ -1,10 +1,13 @@
 /**
- * [INPUT]: 依赖 widgets/Header 与 shared/design-system 组件，依赖用户提供的产品主题功能句
+ * [INPUT]: 依赖 widgets/Header、features/auth/hooks/useAuth、app/providers/LoginModalProvider 与 shared/design-system 组件
  * [OUTPUT]: 对外提供 LandingPage 页面组件
- * [POS]: pages 的 / 页面，展示 AI 虚拟店长产品壳并引导进入 /app
+ * [POS]: pages 的 / 页面，展示 AI 虚拟店长产品壳并引导登录后进入 /app
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLoginModal } from "../app/providers/LoginModalProvider";
+import { useAuth } from "../features/auth/hooks/useAuth";
 import { Header } from "../widgets/Header";
 import {
   BodyText,
@@ -20,6 +23,9 @@ const themeLine =
 
 export function LandingPage() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { user } = useAuth();
+  const { openLoginModal } = useLoginModal();
   const scheduleBars = [
     "h-bar-1",
     "h-bar-2",
@@ -28,6 +34,22 @@ export function LandingPage() {
     "h-bar-5",
     "h-bar-6",
   ];
+
+  useEffect(() => {
+    if (searchParams.get("login") === "1") {
+      openLoginModal();
+      setSearchParams({}, { replace: true });
+    }
+  }, [openLoginModal, searchParams, setSearchParams]);
+
+  const handleEnterApp = () => {
+    if (user) {
+      navigate("/app");
+      return;
+    }
+
+    openLoginModal();
+  };
 
   return (
     <main className="min-h-screen bg-background text-foreground">
@@ -44,8 +66,8 @@ export function LandingPage() {
             {themeLine}。用户不再在商品、文案、视频脚本和发布任务之间来回切换，经营链路被收束为一张清晰工作台。
           </BodyText>
           <div className="mt-stack-xl flex flex-wrap gap-stack-sm">
-            <Button onClick={() => navigate("/app")}>进入工作台</Button>
-            <Button onClick={() => navigate("/app")} variant="secondary">
+            <Button onClick={handleEnterApp}>进入工作台</Button>
+            <Button onClick={handleEnterApp} variant="secondary">
               查看代发流程
             </Button>
           </div>

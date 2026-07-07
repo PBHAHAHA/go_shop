@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 react 的 useState，依赖 shared/design-system 的 Button、Surface、TextArea 与排版组件
  * [OUTPUT]: 对外提供 AgentPanel 组件
- * [POS]: widgets 的右侧 AI 虚拟店长面板，被 AppDashboard 消费，提供本地模拟聊天输入
+ * [POS]: widgets 的右侧 AI 面板备用组件，提供本地模拟聊天输入，当前布局不挂载
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useState } from "react";

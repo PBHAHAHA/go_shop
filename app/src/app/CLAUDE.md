@@ -3,6 +3,7 @@
 
 成员清单
 .gitkeep: 保持应用装配边界目录存在，当前不承载业务实现。
-router/: React Router 装配目录，声明用户端页面路由入口与 DEV-only Design System 路由。
+providers/: 全局 Provider 组合层，承载 Auth 与 LoginModal 状态。
+router/: React Router 装配目录，声明用户端页面路由、RequireAuth 守卫与 DEV-only Design System 路由。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

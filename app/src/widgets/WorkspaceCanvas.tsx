@@ -68,15 +68,7 @@ export function WorkspaceCanvas({
             assets={characterAssets}
             onMoveAsset={onMoveCharacterAsset}
           />
-        ) : (
-          <div className="flex h-full items-center justify-center px-panel text-center">
-            <p className="max-w-[300px] font-sans text-ui-sm leading-ui-relaxed text-muted-foreground">
-              {activeTab === "operations"
-                ? "运营内容区会承接角色资产，生成图文、短视频脚本与平台发布素材。"
-                : "周边区会基于角色三视图生成可售卖商品预览与打样素材。"}
-            </p>
-          </div>
-        )}
+        ) : null}
       </div>
     </section>
   );

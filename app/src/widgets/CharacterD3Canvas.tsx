@@ -8,7 +8,6 @@ import { drag } from "d3-drag";
 import { select } from "d3-selection";
 import { zoom, zoomIdentity } from "d3-zoom";
 import { useEffect, useRef } from "react";
-import { Icon } from "../shared/design-system";
 
 export type CharacterAssetKind = "generated" | "uploaded";
 
@@ -132,22 +131,6 @@ export function CharacterD3Canvas({
 
   return (
     <div className="relative h-full w-full overflow-hidden">
-      {!hasAssets ? (
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center px-panel">
-          <div className="max-w-[360px] text-center">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-border bg-background shadow-sm">
-              <Icon className="h-5 w-5 text-muted-foreground" name="image" />
-            </div>
-            <p className="mt-stack-md font-sans text-ui-sm font-medium text-foreground">
-              让右侧 Agent 生成第一张角色图
-            </p>
-            <p className="mt-stack-xs font-sans text-[12px] leading-ui-relaxed text-muted-foreground">
-              图片会以节点形式进入 D3 画布，可拖拽整理并继续扩展三视图、换装与运营素材。
-            </p>
-          </div>
-        </div>
-      ) : null}
-
       <svg
         aria-label="角色 D3 资产画布"
         className="h-full w-full touch-none"
